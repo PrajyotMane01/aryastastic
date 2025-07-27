@@ -22,7 +22,7 @@ export const calculateSingleMeanCI = (
     const d = absoluteMarginError;
     
     const nExact = (z * z * σ * σ) / (d * d);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR MEAN (NO FINITE CORRECTION) ===`,
@@ -77,7 +77,7 @@ export const calculateSingleMeanCIFinite = (
     
     const n0 = (z * z * σ * σ) / (d * d);
     const nExact = n0 / (1 + (n0 - 1) / N);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR MEAN (WITH FINITE CORRECTION) ===`,
@@ -136,7 +136,7 @@ export const calculateSingleMeanTestTwoTailed = (
     const δ = Math.abs(μ1 - μ0); // Effect size
     
     const nExact = (Math.pow(zAlpha + zBeta, 2) * σ * σ) / (δ * δ);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR MEAN (TWO-TAILED) ===`,
@@ -200,7 +200,7 @@ export const calculateSingleMeanTestOneTailed = (
     const δ = Math.abs(μ1 - μ0);
     
     const nExact = (Math.pow(zAlpha + zBeta, 2) * σ * σ) / (δ * δ);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR MEAN (ONE-TAILED) ===`,
@@ -266,7 +266,7 @@ export const calculateMedianSignTest = (
     const numerator = Math.pow(zAlpha * Math.sqrt(p0 * (1 - p0)) + zBeta * Math.sqrt(p1 * (1 - p1)), 2);
     const denominator = Math.pow(p1 - p0, 2);
     const nExact = numerator / denominator;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== MEDIAN SIGN TEST ===`,

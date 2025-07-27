@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Arya Statistics - Expert Statistical Consulting",
+  title: "ayra Statistics - Expert Statistical Consulting",
   description: "Professional statistical consulting services by Dr. Dashrath R Basannar. 32 years of experience in research methodology, data analysis, and sample size calculations.",
   keywords: ["statistical consulting", "research methodology", "data analysis", "sample size calculation", "biostatistics"],
   authors: [{ name: "Dr. Dashrath R Basannar" }],
-  creator: "Arya Statistics",
+  creator: "ayra Statistics",
 };
 
 export default function RootLayout({

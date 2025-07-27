@@ -15,7 +15,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 flex items-center gap-2">
             <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-8 h-8 object-contain" />
             <Link href="/" className="text-xl font-medium text-slate-800 tracking-wider uppercase">
-              Arya Statistics
+              ayra Statistics
             </Link>
           </div>
 
@@ -51,6 +51,12 @@ export default function Navbar() {
                 className="text-slate-600 hover:text-teal-600 font-light text-sm uppercase tracking-wider transition-colors duration-300"
               >
                 About
+              </a>
+              <a 
+                href="/blog" 
+                className="text-slate-600 hover:text-teal-600 font-light text-sm uppercase tracking-wider transition-colors duration-300"
+              >
+                Blog
               </a>
               <a 
                 href="/contact" 
@@ -123,6 +129,13 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               About
+            </a>
+            <a 
+              href="/blog" 
+              className="block px-3 py-2 text-slate-600 hover:text-teal-600 font-light text-sm uppercase tracking-wider"
+              onClick={() => setIsOpen(false)}
+            >
+              Blog
             </a>
             <a 
               href="/contact" 

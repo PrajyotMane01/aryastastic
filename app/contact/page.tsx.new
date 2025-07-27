@@ -28,11 +28,6 @@ export default function ContactPage() {
   } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   
-  // Debug input values
-  useEffect(() => {
-    console.log('Current form data:', formData);
-  }, [formData]);
-  
   // Initialize EmailJS
   useEffect(() => {
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
@@ -44,16 +39,9 @@ export default function ContactPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Map the form field names back to our state object properties
-    let stateKey = name;
-    if (name === 'from_name') stateKey = 'name';
-    if (name === 'from_email') stateKey = 'email';
-    if (name === 'area_of_research') stateKey = 'areaOfResearch';
-    
     setFormData(prev => ({
       ...prev,
-      [stateKey]: value
+      [name]: value
     }));
   };
 
@@ -62,11 +50,13 @@ export default function ContactPage() {
     setLoading(true);
     setSubmitStatus(null);
     
-    console.log('Submitting form with data:', formData);
+    console.log('Service ID:', process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID);
+    console.log('Template ID:', process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID);
+    console.log('Public Key:', process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
     
-    // Use environment variables or hardcoded values as fallback
-    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_7b8w0x2'; 
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_2rhgl2e';
+    // Direct approach using hardcoded values for testing
+    const serviceId = 'service_7b8w0x2'; 
+    const templateId = 'template_2rhgl2e';
     
     try {
       // Create parameters from the form data
@@ -104,6 +94,14 @@ export default function ContactPage() {
       // Try using form method as fallback
       try {
         if (formRef.current) {
+          // Make form field names match EmailJS template variables
+          const inputs = formRef.current.querySelectorAll('input, textarea, select');
+          inputs.forEach(input => {
+            if (input instanceof HTMLElement && input.name === 'areaOfResearch') {
+              input.setAttribute('name', 'area_of_research');
+            }
+          });
+          
           // Add hidden field for to_email
           const hiddenInput = document.createElement('input');
           hiddenInput.type = 'hidden';
@@ -116,6 +114,13 @@ export default function ContactPage() {
           
           // Clean up hidden input
           formRef.current.removeChild(hiddenInput);
+          
+          // Reset form names back
+          inputs.forEach(input => {
+            if (input instanceof HTMLElement && input.name === 'area_of_research') {
+              input.setAttribute('name', 'areaOfResearch');
+            }
+          });
           
           setSubmitStatus({
             success: true,
@@ -243,7 +248,7 @@ export default function ContactPage() {
                 </label>
                 <input 
                   type="text" 
-                  name="name"
+                  name="from_name" // Match EmailJS template variable
                   value={formData.name}
                   onChange={handleInputChange}
                   required
@@ -259,7 +264,7 @@ export default function ContactPage() {
                 </label>
                 <input 
                   type="email" 
-                  name="email"
+                  name="from_email" // Match EmailJS template variable
                   value={formData.email}
                   onChange={handleInputChange}
                   required
@@ -275,7 +280,7 @@ export default function ContactPage() {
                 </label>
                 <input 
                   type="tel" 
-                  name="mobile"
+                  name="mobile" // Match EmailJS template variable
                   value={formData.mobile}
                   onChange={handleInputChange}
                   required
@@ -291,7 +296,7 @@ export default function ContactPage() {
                 </label>
                 <input 
                   type="text" 
-                  name="areaOfResearch"
+                  name="area_of_research" // Match EmailJS template variable
                   value={formData.areaOfResearch}
                   onChange={handleInputChange}
                   required
@@ -355,11 +360,6 @@ export default function ContactPage() {
                   'Submit Consultation Request'
                 )}
               </button>
-              
-              {/* Hidden fields for EmailJS */}
-              <input type="hidden" name="from_name" value={formData.name} />
-              <input type="hidden" name="from_email" value={formData.email} />
-              <input type="hidden" name="area_of_research" value={formData.areaOfResearch} />
             </form>
           </div>
         </div>

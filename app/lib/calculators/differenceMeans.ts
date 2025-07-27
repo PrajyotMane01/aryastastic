@@ -18,9 +18,8 @@ export const calculateDiffMeansCI = (
   try {
     const alpha = (100 - confidenceLevel) / 100;
     const z = getZValue(confidenceLevel);
-    const pooledVariance = stdDev1 ** 2 + stdDev2 ** 2;
-    const nExact = (2 * z ** 2 * pooledVariance) / (marginError ** 2);
-    const n = Math.ceil(nExact);
+    const nExact = (z * z * (stdDev1 * stdDev1 + stdDev2 * stdDev2)) / (marginError * marginError);
+    const n = Math.round(nExact);
 
     const calculations = [
       `Given:`,
@@ -35,15 +34,12 @@ export const calculateDiffMeansCI = (
       `Step 2: Find Z-value for ${confidenceLevel}% confidence`,
       `Z_{α/2} = ${z.toFixed(4)}`,
       ``,
-      `Step 3: Calculate pooled variance`,
-      `σ²pooled = σ1² + σ2² = ${stdDev1}² + ${stdDev2}² = ${pooledVariance.toFixed(4)}`,
-      ``,
-      `Step 4: Apply the formula`,
-      `n = 2 × Z_{α/2}² × σ²pooled / E²`,
-      `n = 2 × ${z.toFixed(4)}² × ${pooledVariance.toFixed(4)} / ${marginError}²`,
+      `Step 3: Apply the formula`,
+      `n = Z_{α/2}² * (σ1² + σ2²) / E²`,
+      `n = ${z.toFixed(4)}² * (${stdDev1}² + ${stdDev2}²) / ${marginError}²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 5: Round up to nearest integer`,
+      `Step 4: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
 
@@ -51,7 +47,7 @@ export const calculateDiffMeansCI = (
       sampleSize: n,
       power: null,
       effectSize: null,
-      interpretation: `For a ${confidenceLevel}% confidence interval of the difference in means with margin of error ${marginError}, you need ${n} subjects per group (total N = ${2*n}).`,
+      interpretation: `For a ${confidenceLevel}% confidence interval of the difference in means with margin of error ${marginError}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -84,7 +80,7 @@ export const calculateDiffMeansCIFinite = (
     const avgCorrection = (correction1 + correction2) / 2;
 
     const nExact = n0 / (1 + avgCorrection);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
 
     const calculations = [
       `Given:`,
@@ -141,9 +137,8 @@ export const calculateDiffMeansTwoTailed = (
     const zAlpha = getZValue((1 - alpha) * 100);
     const zBeta = getZValueOneTailed(power);
     const effectSize = Math.abs(populationMean1 - populationMean2);
-    const pooledVar = stdDev1 ** 2 + stdDev2 ** 2;
-    const nExact = (2 * (zAlpha + zBeta) ** 2 * pooledVar) / (effectSize ** 2);
-    const n = Math.ceil(nExact);
+    const nExact = ((stdDev1 * stdDev1 + stdDev2 * stdDev2) * (zAlpha + zBeta) * (zAlpha + zBeta)) / (effectSize * effectSize);
+    const n = Math.round(nExact);
 
     const calculations = [
       `=== HYPOTHESIS TEST FOR DIFFERENCE BETWEEN MEANS (TWO-TAILED) ===`,
@@ -163,23 +158,20 @@ export const calculateDiffMeansTwoTailed = (
       `Z_{α/2} = ${zAlpha.toFixed(4)}`,
       `Z_{β} = ${zBeta.toFixed(4)}`,
       ``,
-      `Step 3: Calculate pooled variance`,
-      `σ²pooled = σ₁² + σ₂² = ${stdDev1}² + ${stdDev2}² = ${pooledVar.toFixed(4)}`,
-      ``,
-      `Step 4: Apply the formula for two independent groups`,
-      `n = 2 × (Z_{α/2} + Z_{β})² × σ²pooled / δ²`,
-      `n = 2 × (${zAlpha.toFixed(4)} + ${zBeta.toFixed(4)})² × ${pooledVar.toFixed(4)} / ${effectSize}²`,
+      `Step 3: Apply the formula for two independent groups`,
+      `n = (σ₁² + σ₂²) * (Z_{α/2} + Z_{β})² / δ²`,
+      `n = (${stdDev1}² + ${stdDev2}²) * (${zAlpha.toFixed(4)} + ${zBeta.toFixed(4)})² / ${effectSize}²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 5: Round up to nearest integer`,
+      `Step 4: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
 
     return {
       sampleSize: n,
       power: power,
-      effectSize: effectSize / Math.sqrt(pooledVar),
-      interpretation: `For a two-tailed test comparing two independent means with α=${alpha}, power=${power}, testing μ₁=${populationMean1} vs μ₂=${populationMean2}, you need ${n} subjects per group (total N = ${2*n}).`,
+      effectSize: effectSize / Math.sqrt(stdDev1 * stdDev1 + stdDev2 * stdDev2),
+      interpretation: `For a two-tailed test comparing two independent means with α=${alpha}, power=${power}, testing μ₁=${populationMean1} vs μ₂=${populationMean2}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -206,9 +198,8 @@ export const calculateDiffMeansOneTailed = (
     const zAlpha = getZValueOneTailedAlpha(alpha);
     const zBeta = getZValueOneTailed(power);
     const effectSize = Math.abs(populationMean1 - populationMean2);
-    const pooledVar = stdDev1 ** 2 + stdDev2 ** 2;
-    const nExact = (2 * pooledVar * (zAlpha + zBeta) ** 2) / (effectSize ** 2);
-    const n = Math.ceil(nExact);
+    const nExact = ((stdDev1 * stdDev1 + stdDev2 * stdDev2) * (zAlpha + zBeta) * (zAlpha + zBeta)) / (effectSize * effectSize);
+    const n = Math.round(nExact);
 
     const calculations = [
       `=== HYPOTHESIS TEST FOR DIFFERENCE BETWEEN MEANS (ONE-TAILED) ===`,
@@ -228,23 +219,20 @@ export const calculateDiffMeansOneTailed = (
       `Z_{α} = ${zAlpha.toFixed(4)}`,
       `Z_{β} = ${zBeta.toFixed(4)}`,
       ``,
-      `Step 3: Calculate pooled variance`,
-      `σ²pooled = σ₁² + σ₂² = ${stdDev1}² + ${stdDev2}² = ${pooledVar.toFixed(4)}`,
-      ``,
-      `Step 4: Apply the formula`,
-      `n = 2 × σ²pooled × (Z_{α} + Z_{β})² / δ²`,
-      `n = 2 × ${pooledVar.toFixed(4)} × (${zAlpha.toFixed(4)} + ${zBeta.toFixed(4)})² / ${effectSize}²`,
+      `Step 3: Apply the formula`,
+      `n = (σ₁² + σ₂²) * (Z_{α} + Z_{β})² / δ²`,
+      `n = (${stdDev1}² + ${stdDev2}²) * (${zAlpha.toFixed(4)} + ${zBeta.toFixed(4)})² / ${effectSize}²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 5: Round up to nearest integer`,
+      `Step 4: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
 
     return {
       sampleSize: n,
       power: power,
-      effectSize: effectSize / Math.sqrt(pooledVar),
-      interpretation: `For a one-tailed test comparing two independent means with α=${alpha}, power=${power}, testing μ₁=${populationMean1} vs μ₂=${populationMean2}, you need ${n} subjects per group (total N = ${2*n}).`,
+      effectSize: effectSize / Math.sqrt(stdDev1 * stdDev1 + stdDev2 * stdDev2),
+      interpretation: `For a one-tailed test comparing two independent means with α=${alpha}, power=${power}, testing μ₁=${populationMean1} vs μ₂=${populationMean2}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -271,7 +259,7 @@ export const calculateDiffMeansEquivA = (
     const zBeta = getZValueOneTailed(power);
     const pooledVar = stdDev1 ** 2 + stdDev2 ** 2;
     const nExact = (2 * pooledVar * (zAlpha + zBeta) ** 2) / (equivalenceMargin ** 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
 
     const calculations = [
       `Given:`,
@@ -329,7 +317,7 @@ export const calculateDiffMeansEquivB = (
     const pooledVar = stdDev1 ** 2 + stdDev2 ** 2;
     const effectiveDiff = equivalenceMargin - Math.abs(expectedDiff);
     const nExact = (2 * pooledVar * (zAlpha + zBeta) ** 2) / (effectiveDiff ** 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
 
     const calculations = [
       `Given:`,
@@ -385,7 +373,7 @@ export const calculateDiffMeansNonInf = (
     const zBeta = getZValueOneTailed(power);
     const pooledVar = stdDev1 ** 2 + stdDev2 ** 2;
     const nExact = (2 * pooledVar * (zAlpha + zBeta) ** 2) / (nonInfMargin ** 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
 
     const calculations = [
       `Given:`,
@@ -452,12 +440,12 @@ export const calculateDiffMeansPaired = (
     const zAlphaTwoTailed = getZValue((1 - alpha) * 100);
     const zBeta = getZValueOneTailed(power);
     const n1Exact = Math.pow((zAlphaTwoTailed + zBeta) * stdDevDiff / effectSize, 2);
-    const n1 = Math.ceil(n1Exact);
+    const n1 = Math.round(n1Exact);
     
     // One-tailed test
     const zAlphaOneTailed = getZValueOneTailedAlpha(alpha);
     const n2Exact = Math.pow((zAlphaOneTailed + zBeta) * stdDevDiff / effectSize, 2);
-    const n2 = Math.ceil(n2Exact);
+    const n2 = Math.round(n2Exact);
     
     const calculations = [
       `=== PAIRED 'T' TEST SAMPLE SIZE CALCULATION ===`,
@@ -526,12 +514,12 @@ export const calculateDiffMeansCrossover = (
     const zAlphaTwoTailed = getZValue((1 - alpha) * 100);
     const zBeta = getZValueOneTailed(power);
     const n1Exact = (4 * stdDevDiff * stdDevDiff * Math.pow(zAlphaTwoTailed + zBeta, 2)) / (treatmentEffect * treatmentEffect);
-    const n1 = Math.ceil(n1Exact);
+    const n1 = Math.round(n1Exact);
     
     // One-tailed test
     const zAlphaOneTailed = getZValueOneTailedAlpha(alpha);
     const n2Exact = (4 * stdDevDiff * stdDevDiff * Math.pow(zAlphaOneTailed + zBeta, 2)) / (treatmentEffect * treatmentEffect);
-    const n2 = Math.ceil(n2Exact);
+    const n2 = Math.round(n2Exact);
     
     const calculations = [
       `=== CROSSOVER DESIGN SAMPLE SIZE CALCULATION ===`,
@@ -632,8 +620,8 @@ export const calculateEquivalenceStudyDetailed = (
     // For unequal allocation: n1 = (1 + 1/K) × base_formula
     const baseSampleSize = pooledVariance * (zAlphaHalf + zBeta) ** 2 / (equivalenceThreshold ** 2);
     const n1Exact = (1 + 1/allocationRatio) * baseSampleSize;
-    const n1 = Math.ceil(n1Exact);
-    const n2 = Math.ceil(allocationRatio * n1);
+    const n1 = Math.round(n1Exact);
+    const n2 = Math.round(allocationRatio * n1);
     
     const calculations = [
       `=== EQUIVALENCE STUDY CALCULATION ===`,

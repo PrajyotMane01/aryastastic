@@ -6,7 +6,7 @@ export default function HomePage() {
       {/* Header Bar */}
       <div className="w-full max-w-4xl mx-auto mb-8">
         <div className="bg-cyan-900 text-yellow-300 text-center py-3 rounded-t-xl font-semibold text-lg tracking-wide shadow-md uppercase">
-          Arya Statistical Consultancy and Solutions Services
+          ayra Statistical Consultancy and Solutions Services
         </div>
         <div className="bg-white/90 text-slate-700 px-6 py-4 rounded-b-xl shadow-md border border-cyan-200 text-base font-light">
           Statistical consulting services for Data Management and Statistical Analysis, designing and validating questionnaire tools, as well as for organizing, carrying out, and publishing research in the domains of clinical, social science, psychology, economics and business.

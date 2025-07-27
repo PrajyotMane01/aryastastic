@@ -29,7 +29,7 @@ export const calculateANOVA = (
     
     // Approximate sample size for ANOVA
     const nExact = (Math.pow(zAlpha + zBeta, 2) * 2) / (f * f);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== ANOVA SAMPLE SIZE CALCULATION ===`,
@@ -96,7 +96,7 @@ export const calculateMultipleProportions = (
     const zBeta = getZValueOneTailed(power);
     
     const nExact = (Math.pow(zAlpha + zBeta, 2) * pBar * (1 - pBar)) / (effectSize * effectSize);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== MULTIPLE PROPORTIONS COMPARISON ===`,
@@ -156,7 +156,7 @@ export const calculateDiagnosticSensitivitySpecificity = (
     const d = absoluteMarginError;
     
     const nExact = (z * z * p * (1 - p)) / (d * d);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== DIAGNOSTIC SENSITIVITY/SPECIFICITY CI ===`,
@@ -207,7 +207,7 @@ export const calculateDiagnosticPPV = (
     const d = precision;
     
     const nExact = (z * z * ppv * (1 - ppv)) / (d * d);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== POSITIVE PREDICTIVE VALUE CI ===`,
@@ -258,7 +258,7 @@ export const calculateDiagnosticNPV = (
     const d = precision;
     
     const nExact = (z * z * npv * (1 - npv)) / (d * d);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== NEGATIVE PREDICTIVE VALUE CI ===`,
@@ -315,7 +315,7 @@ export const calculateLRPlusEqual = (
     const lnLRplus = Math.log(LRplus);
     
     const nExact = (z * z * variance) / (lnLRplus * lnLRplus);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== LIKELIHOOD RATIO POSITIVE CI (EQUAL ALLOCATION) ===`,
@@ -384,8 +384,8 @@ export const calculateLRPlusUnequal = (
     const lnLRplus = Math.log(LRplus);
     
     const nCasesExact = (z * z * variance) / (lnLRplus * lnLRplus);
-    const nCases = Math.ceil(nCasesExact);
-    const nControls = Math.ceil(m * nCases);
+    const nCases = Math.round(nCasesExact);
+    const nControls = Math.round(m * nCases);
     
     const calculations = [
       `=== LIKELIHOOD RATIO POSITIVE CI (UNEQUAL ALLOCATION) ===`,
@@ -454,7 +454,7 @@ export const calculateLRMinusEqual = (
     const lnLRminus = Math.log(LRminus);
     
     const nExact = (z * z * variance) / (lnLRminus * lnLRminus);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== LIKELIHOOD RATIO NEGATIVE CI (EQUAL ALLOCATION) ===`,
@@ -523,8 +523,8 @@ export const calculateLRMinusUnequal = (
     const lnLRminus = Math.log(LRminus);
     
     const nCasesExact = (z * z * variance) / (lnLRminus * lnLRminus);
-    const nCases = Math.ceil(nCasesExact);
-    const nControls = Math.ceil(m * nCases);
+    const nCases = Math.round(nCasesExact);
+    const nControls = Math.round(m * nCases);
     
     const calculations = [
       `=== LIKELIHOOD RATIO NEGATIVE CI (UNEQUAL ALLOCATION) ===`,
@@ -596,7 +596,7 @@ export const calculateDiagnosticSensitivityComparison = (
     const effectSize = Math.abs(p1 - p2);
     
     const nExact = (Math.pow(zAlpha + zBeta, 2) * variance) / (effectSize * effectSize);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== DIAGNOSTIC SENSITIVITY COMPARISON ===`,
@@ -660,7 +660,7 @@ export const calculateDiagnosticPairedComparison = (
     
     const effectSize = Math.abs(p1 - p2);
     const nExact = (Math.pow(zAlpha + zBeta, 2) * pd) / (effectSize * effectSize);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== PAIRED DIAGNOSTIC TEST COMPARISON ===`,
@@ -727,7 +727,7 @@ export const calculateICC = (
     const effectSize = Math.abs(z1 - z0);
     
     const nExact = Math.pow((zAlpha + zBeta) / effectSize, 2) + 3;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== INTRA CLASS CORRELATION COEFFICIENT ===`,
@@ -796,7 +796,7 @@ export const calculateCorrelation = (
     const effectSize = Math.abs(z1 - z0);
     
     const nExact = Math.pow((zAlpha + zBeta) / effectSize, 2) + 3;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CORRELATION COEFFICIENT ===`,

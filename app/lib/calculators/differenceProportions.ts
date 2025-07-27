@@ -11,9 +11,8 @@ import {
 export const calculateDiffPropCI = (confidenceLevel: number, p1: number, p2: number, marginError: number): CalculatorResult => {
   try {
     const z = getZValue(confidenceLevel);
-    const pooledVariance = p1 * (1 - p1) + p2 * (1 - p2);
-    const nExact = (2 * z * z * pooledVariance) / (marginError * marginError);
-    const n = Math.ceil(nExact);
+    const nExact = (z * z * (p1 * (1 - p1) + p2 * (1 - p2))) / (marginError * marginError);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -22,15 +21,12 @@ export const calculateDiffPropCI = (confidenceLevel: number, p1: number, p2: num
       `• Proportion Group 2 (p2) = ${p2}`,
       `• Margin of Error (E) = ${marginError}`,
       ``,
-      `Step 1: Calculate pooled variance`,
-      `Var = p1(1-p1) + p2(1-p2) = ${p1}×${(1-p1).toFixed(3)} + ${p2}×${(1-p2).toFixed(3)} = ${pooledVariance.toFixed(4)}`,
-      ``,
-      `Step 2: Apply the formula`,
-      `n = 2 × Z_{α/2}² × Var / E²`,
-      `n = 2 × ${z.toFixed(4)}² × ${pooledVariance.toFixed(4)} / ${marginError}²`,
+      `Step 1: Apply the formula`,
+      `n = Z_{α/2}² * (p1(1-p1) + p2(1-p2)) / E²`,
+      `n = ${z.toFixed(4)}² * (${p1}*${(1-p1).toFixed(3)} + ${p2}*${(1-p2).toFixed(3)}) / ${marginError}²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 3: Round up to nearest integer`,
+      `Step 2: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
     
@@ -38,7 +34,7 @@ export const calculateDiffPropCI = (confidenceLevel: number, p1: number, p2: num
       sampleSize: n,
       power: null,
       effectSize: null,
-      interpretation: `For a ${confidenceLevel}% confidence interval of the difference in proportions with margin of error ${marginError}, you need ${n} subjects per group (total N = ${2*n}).`,
+      interpretation: `For a ${confidenceLevel}% confidence interval of the difference in proportions with margin of error ${marginError}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -60,7 +56,7 @@ export const calculateDiffPropTwoTailed = (alpha: number, power: number, p1: num
     const numerator1 = zAlpha * Math.sqrt(2 * pooledP * (1 - pooledP));
     const numerator2 = zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
     const nExact = Math.pow((numerator1 + numerator2) / Math.abs(p1 - p2), 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -106,7 +102,7 @@ export const calculateDiffPropOneTailed = (alpha: number, power: number, p1: num
     const numerator1 = zAlpha * Math.sqrt(2 * pooledP * (1 - pooledP));
     const numerator2 = zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
     const nExact = Math.pow((numerator1 + numerator2) / Math.abs(p1 - p2), 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -148,9 +144,8 @@ export const calculateDiffPropEquivA = (alpha: number, power: number, equivalenc
   try {
     const zAlpha = getZValue((1 - alpha) * 100);
     const zBeta = getZValueOneTailed(power);
-    const pooledVariance = p1 * (1 - p1) + p2 * (1 - p2);
-    const nExact = (2 * pooledVariance * Math.pow(zAlpha + zBeta, 2)) / (equivalenceMargin * equivalenceMargin);
-    const n = Math.ceil(nExact);
+    const nExact = ((p1 * (1 - p1) + p2 * (1 - p2)) * (zAlpha + zBeta) * (zAlpha + zBeta)) / (equivalenceMargin * equivalenceMargin);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -160,14 +155,11 @@ export const calculateDiffPropEquivA = (alpha: number, power: number, equivalenc
       `• Proportion Group 1 (p1) = ${p1}`,
       `• Proportion Group 2 (p2) = ${p2}`,
       ``,
-      `Step 1: Calculate pooled variance`,
-      `Var = p1(1-p1) + p2(1-p2) = ${pooledVariance.toFixed(4)}`,
-      ``,
-      `Step 2: Apply equivalence formula`,
-      `n = 2 × Var × (Z_{α/2} + Z_{β})² / δ²`,
+      `Step 1: Apply equivalence formula`,
+      `n = (p1(1-p1) + p2(1-p2)) * (Z_{α/2} + Z_{β})² / δ²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 3: Round up to nearest integer`,
+      `Step 2: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
     
@@ -175,7 +167,7 @@ export const calculateDiffPropEquivA = (alpha: number, power: number, equivalenc
       sampleSize: n,
       power: power,
       effectSize: equivalenceMargin,
-      interpretation: `For an equivalence study comparing proportions with margin ${equivalenceMargin}, α=${alpha}, and power=${power}, you need ${n} subjects per group (total N = ${2*n}).`,
+      interpretation: `For an equivalence study comparing proportions with margin ${equivalenceMargin}, α=${alpha}, and power=${power}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -193,10 +185,9 @@ export const calculateDiffPropEquivB = (alpha: number, power: number, equivalenc
   try {
     const zAlpha = getZValue((1 - alpha) * 100);
     const zBeta = getZValueOneTailed(power);
-    const pooledVariance = p1 * (1 - p1) + p2 * (1 - p2);
     const effectiveDiff = equivalenceMargin - Math.abs(expectedDiff);
-    const nExact = (2 * pooledVariance * Math.pow(zAlpha + zBeta, 2)) / (effectiveDiff * effectiveDiff);
-    const n = Math.ceil(nExact);
+    const nExact = ((p1 * (1 - p1) + p2 * (1 - p2)) * (zAlpha + zBeta) * (zAlpha + zBeta)) / (effectiveDiff * effectiveDiff);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -211,7 +202,7 @@ export const calculateDiffPropEquivB = (alpha: number, power: number, equivalenc
       `Effective diff = δ - |expected diff| = ${equivalenceMargin} - |${expectedDiff}| = ${effectiveDiff.toFixed(4)}`,
       ``,
       `Step 2: Apply equivalence formula B`,
-      `n = 2 × Var × (Z_{α/2} + Z_{β})² / (effective diff)²`,
+      `n = (p1(1-p1) + p2(1-p2)) * (Z_{α/2} + Z_{β})² / (effective diff)²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
       `Step 3: Round up to nearest integer`,
@@ -222,7 +213,7 @@ export const calculateDiffPropEquivB = (alpha: number, power: number, equivalenc
       sampleSize: n,
       power: power,
       effectSize: effectiveDiff,
-      interpretation: `For equivalence study B comparing proportions with margin ${equivalenceMargin} and expected difference ${expectedDiff}, you need ${n} subjects per group (total N = ${2*n}).`,
+      interpretation: `For equivalence study B comparing proportions with margin ${equivalenceMargin} and expected difference ${expectedDiff}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -240,9 +231,8 @@ export const calculateDiffPropNonInf = (alpha: number, power: number, nonInfMarg
   try {
     const zAlpha = getZValueOneTailedAlpha(alpha);
     const zBeta = getZValueOneTailed(power);
-    const pooledVariance = p1 * (1 - p1) + p2 * (1 - p2);
-    const nExact = (2 * pooledVariance * Math.pow(zAlpha + zBeta, 2)) / (nonInfMargin * nonInfMargin);
-    const n = Math.ceil(nExact);
+    const nExact = ((p1 * (1 - p1) + p2 * (1 - p2)) * (zAlpha + zBeta) * (zAlpha + zBeta)) / (nonInfMargin * nonInfMargin);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -252,14 +242,11 @@ export const calculateDiffPropNonInf = (alpha: number, power: number, nonInfMarg
       `• Proportion Group 1 (p1) = ${p1}`,
       `• Proportion Group 2 (p2) = ${p2}`,
       ``,
-      `Step 1: Calculate pooled variance`,
-      `Var = p1(1-p1) + p2(1-p2) = ${pooledVariance.toFixed(4)}`,
-      ``,
-      `Step 2: Apply non-inferiority formula`,
-      `n = 2 × Var × (Z_{α} + Z_{β})² / δ²`,
+      `Step 1: Apply non-inferiority formula`,
+      `n = (p1(1-p1) + p2(1-p2)) * (Z_{α} + Z_{β})² / δ²`,
       `n = ${nExact.toFixed(4)}`,
       ``,
-      `Step 3: Round up to nearest integer`,
+      `Step 2: Round up to nearest integer`,
       `Required sample size per group = ${n}`
     ];
     
@@ -267,7 +254,7 @@ export const calculateDiffPropNonInf = (alpha: number, power: number, nonInfMarg
       sampleSize: n,
       power: power,
       effectSize: nonInfMargin,
-      interpretation: `For a non-inferiority study comparing proportions with margin ${nonInfMargin}, α=${alpha}, and power=${power}, you need ${n} subjects per group (total N = ${2*n}).`,
+      interpretation: `For a non-inferiority study comparing proportions with margin ${nonInfMargin}, α=${alpha}, and power=${power}, you need ${n} subjects per group (total N = ${2 * n}).`,
       calculations: calculations
     };
   } catch {
@@ -289,7 +276,7 @@ export const calculateDiffPropRelTwo = (alpha: number, power: number, p1: number
     const zBeta = getZValueOneTailed(power);
     const varDiff = p1 * (1 - p1) + p2 * (1 - p2) - 2 * correlation * Math.sqrt(p1 * (1 - p1) * p2 * (1 - p2));
     const nExact = (Math.pow(zAlpha + zBeta, 2) * varDiff) / Math.pow(p1 - p2, 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,
@@ -335,7 +322,7 @@ export const calculateDiffPropRelOne = (alpha: number, power: number, p1: number
     const zBeta = getZValueOneTailed(power);
     const varDiff = p1 * (1 - p1) + p2 * (1 - p2) - 2 * correlation * Math.sqrt(p1 * (1 - p1) * p2 * (1 - p2));
     const nExact = (Math.pow(zAlpha + zBeta, 2) * varDiff) / Math.pow(p1 - p2, 2);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `Given:`,

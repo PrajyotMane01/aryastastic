@@ -17,7 +17,7 @@ export const calculateSinglePropCI = (
     const d = absoluteMarginError;
     
     const nExact = (z * z * p * (1 - p)) / (d * d);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR PROPORTION (NO FINITE CORRECTION) ===`,
@@ -72,7 +72,7 @@ export const calculateSinglePropCIFinite = (
     
     const n0 = (z * z * p * (1 - p)) / (d * d);
     const nExact = n0 / (1 + (n0 - 1) / N);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR PROPORTION (WITH FINITE CORRECTION) ===`,
@@ -126,7 +126,7 @@ export const calculateSinglePropCIRelative = (
     
     const absoluteMargin = r * p; // Convert relative to absolute margin
     const nExact = (z * z * p * (1 - p)) / (absoluteMargin * absoluteMargin);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR PROPORTION (RELATIVE MARGIN, NO FINITE CORRECTION) ===`,
@@ -182,7 +182,7 @@ export const calculateSinglePropCIRelativeFinite = (
     const absoluteMargin = r * p;
     const n0 = (z * z * p * (1 - p)) / (absoluteMargin * absoluteMargin);
     const nExact = n0 / (1 + (n0 - 1) / N);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR PROPORTION (RELATIVE MARGIN, WITH FINITE CORRECTION) ===`,
@@ -241,7 +241,7 @@ export const calculateSinglePropTestTwoTailed = (
     const numerator = Math.pow(zAlpha * Math.sqrt(p0 * (1 - p0)) + zBeta * Math.sqrt(p1 * (1 - p1)), 2);
     const denominator = Math.pow(p1 - p0, 2);
     const nExact = numerator / denominator;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR PROPORTION (TWO-TAILED) ===`,
@@ -300,7 +300,7 @@ export const calculateSinglePropTestOneTailed = (
     const numerator = Math.pow(zAlpha * Math.sqrt(p0 * (1 - p0)) + zBeta * Math.sqrt(p1 * (1 - p1)), 2);
     const denominator = Math.pow(p1 - p0, 2);
     const nExact = numerator / denominator;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR PROPORTION (ONE-TAILED) ===`,
@@ -356,7 +356,7 @@ export const calculateIncidenceRateCI = (
     
     // For Poisson distribution: n = Z² / (λt × r²)
     const nExact = (z * z) / (λ * t * r * r);
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== CI FOR INCIDENCE RATE (RELATIVE MARGIN) ===`,
@@ -414,7 +414,7 @@ export const calculateIncidenceRateTestTwoTailed = (
     const numerator = Math.pow(zAlpha * Math.sqrt(λ0) + zBeta * Math.sqrt(λ1), 2);
     const denominator = Math.pow(λ1 - λ0, 2) * t;
     const nExact = numerator / denominator;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR INCIDENCE RATE (TWO-TAILED) ===`,
@@ -471,7 +471,7 @@ export const calculateIncidenceRateTestOneTailed = (
     const numerator = Math.pow(zAlpha * Math.sqrt(λ0) + zBeta * Math.sqrt(λ1), 2);
     const denominator = Math.pow(λ1 - λ0, 2) * t;
     const nExact = numerator / denominator;
-    const n = Math.ceil(nExact);
+    const n = Math.round(nExact);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR INCIDENCE RATE (ONE-TAILED) ===`,

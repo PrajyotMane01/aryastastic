@@ -31,8 +31,8 @@ export const calculateCohortStudyCI = (
     const variance = (1 / Pe + K / Pu);
     const lnRR = Math.log(RR);
     const nExact = (z * z * variance) / (lnRR * lnRR * r * r);
-    const n1 = Math.ceil(nExact);
-    const n2 = Math.ceil(K * n1);
+    const n1 = Math.round(nExact);
+    const n2 = Math.round(K * n1);
     
     const calculations = [
       `=== CI FOR RELATIVE RISK (COHORT STUDY) ===`,
@@ -109,8 +109,8 @@ export const calculateCohortStudyTest = (
     const deltaLnRR = Math.abs(lnRR1 - lnRR0);
     
     const nExact = (Math.pow(zAlpha * Math.sqrt(var0) + zBeta * Math.sqrt(var1), 2)) / (deltaLnRR * deltaLnRR);
-    const n1 = Math.ceil(nExact);
-    const n2 = Math.ceil(K * n1);
+    const n1 = Math.round(nExact);
+    const n2 = Math.round(K * n1);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR RELATIVE RISK ===`,
@@ -187,8 +187,8 @@ export const calculateCaseControlCI = (
     const lnOR = Math.log(OR);
     
     const nCasesExact = (z * z * variance) / (lnOR * lnOR * r * r);
-    const nCases = Math.ceil(nCasesExact);
-    const nControls = Math.ceil(m * nCases);
+    const nCases = Math.round(nCasesExact);
+    const nControls = Math.round(m * nCases);
     
     const calculations = [
       `=== CI FOR ODDS RATIO (CASE-CONTROL STUDY) ===`,
@@ -266,8 +266,8 @@ export const calculateCaseControlTest = (
     const deltaLnOR = Math.abs(lnOR1 - lnOR0);
     
     const nCasesExact = (Math.pow(zAlpha * Math.sqrt(var0) + zBeta * Math.sqrt(var1), 2)) / (deltaLnOR * deltaLnOR);
-    const nCases = Math.ceil(nCasesExact);
-    const nControls = Math.ceil(m * nCases);
+    const nCases = Math.round(nCasesExact);
+    const nControls = Math.round(m * nCases);
     
     const calculations = [
       `=== HYPOTHESIS TEST FOR ODDS RATIO ===`,
